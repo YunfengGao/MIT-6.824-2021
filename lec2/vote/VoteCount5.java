@@ -6,6 +6,7 @@ import java.util.concurrent.SynchronousQueue;
 /**
  * 使用线程安全的队列SynchronousQueue，模拟无缓冲Channel，实现并发生产和消费
  * 和Golang里使用Channel传递数据还是不大一样
+ * 相对vote1-vote4，将vote计算逻辑挪到了单线程的消费者里
  */
 public class VoteCount5 {
     private static class UnsafeCounter {
