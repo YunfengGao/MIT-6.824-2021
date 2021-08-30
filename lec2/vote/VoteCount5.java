@@ -1,6 +1,5 @@
 import java.security.SecureRandom;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 
 /**
@@ -54,7 +53,7 @@ public class VoteCount5 {
         }
 
         System.out.println(unsafeCounter.getCount() >= 5 ? "received 5+ votes!" : "lost");
-        // main线程可能没消费掉vote线程生产的全部数据，导致vote线程阻塞，需要主动结束程序
+        // main线程可能没消费掉vote线程生产的全部数据，导致非守护线程vote线程阻塞从而JVM不退出，需要主动结束程序
         System.exit(0);
     }
 
