@@ -15,10 +15,10 @@ import vo.PutArgs;
 public class Server {
     private final ExecutorService threadPool;
 
-    static class KV implements KVService {
+    private static class KV implements KVService {
         Map<String, String> data;
 
-        KV() {
+        private KV() {
             data = new ConcurrentHashMap<>();
         }
 
