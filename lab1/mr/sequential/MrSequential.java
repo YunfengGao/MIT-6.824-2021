@@ -59,7 +59,7 @@ public class MrSequential {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                stringBuilder.append(line);
+                stringBuilder.append(line).append(System.lineSeparator());
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 
 public class WordCount {
     public List<KeyValue> map(String contents) {
-        List<String> words = Arrays.stream(contents.split("[^a-zA-Z]+")).collect(Collectors.toList());
+        List<String> words = Arrays.stream(contents.split("[^a-zA-Z]+"))
+                                   .filter(word -> !"".equals(word))
+                                   .collect(Collectors.toList());
         List<KeyValue> keyValues = new ArrayList<>(words.size());
         for (String word : words) {
             KeyValue keyValue = new KeyValue(word, "1");
