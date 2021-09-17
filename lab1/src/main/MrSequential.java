@@ -1,4 +1,4 @@
-package sequential;
+package main;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -10,6 +10,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import mr.KeyValue;
+import mrapp.WordCount;
 
 public class MrSequential {
     public static void main(String[] args) {

@@ -1,9 +1,10 @@
-package sequential;
+package mrapp;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import mr.KeyValue;
 
 public class WordCount {
     public List<KeyValue> map(String contents) {

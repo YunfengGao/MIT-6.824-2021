@@ -1,4 +1,4 @@
-package sequential;
+package mr;
 
 public class KeyValue {
     private String key;
