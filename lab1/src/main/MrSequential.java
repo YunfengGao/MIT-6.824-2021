@@ -7,15 +7,16 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import mr.KeyValue;
-import mrapp.WordCount;
+import mrapp.IMapReduce;
 
 public class MrSequential {
     public static void main(String[] args) {
-        File file = new File(args[0]);
+        File file = new File(args[1]);
         // todo: 如何用Java模拟出Linux路径格式的正则？
         File[] files = file.listFiles();
         if (files == null) {
@@ -24,10 +25,10 @@ public class MrSequential {
         }
 
         List<KeyValue> intermediate = new ArrayList<>(files.length);
-        WordCount wordCount = new WordCount();
+        IMapReduce mapReduce = loadPlugin(args[0]);
         for (File f : files) {
             String content = readAll(f);
-            intermediate.addAll(wordCount.map(content));
+            intermediate.addAll(mapReduce.map(content));
         }
 
         intermediate.sort(Comparator.comparing(KeyValue::getKey));
@@ -47,13 +48,26 @@ public class MrSequential {
                 for (int k = i; k < j; k++) {
                     values.add(intermediate.get(k).getValue());
                 }
-                String output = wordCount.reduce(values);
+                String output = mapReduce.reduce(values);
                 bw.write(keyI + " " + output + System.lineSeparator());
                 i = j;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static IMapReduce loadPlugin(String fileName) {
+        IMapReduce mapReduce;
+        try {
+            @SuppressWarnings("unchecked")
+            Class<IMapReduce> clazz = (Class<IMapReduce>) Class.forName(fileName);
+            mapReduce = clazz.getDeclaredConstructor().newInstance();
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return mapReduce;
     }
 
     private static String readAll(final File f) {

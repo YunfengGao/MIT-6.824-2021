@@ -11,7 +11,7 @@ cd mr-tmp || exit 1
 rm -f mr-*
 
 # make sure software is freshly built.
-(javac ../MrSequential.java ../../mr/KeyValue.java ../../mrapp/WordCount.java -d out) || exit 1
+(javac ../MrSequential.java ../../mr/KeyValue.java ../../mrapp/*.java -d out) || exit 1
 
 failed_any=0
 
@@ -19,7 +19,7 @@ failed_any=0
 # first word-count
 
 # generate the correct output
-java -classpath out main.MrSequential ../../../data || exit 1
+java -classpath out main.MrSequential mrapp.WordCount ../../../data || exit 1
 sort mr-out-0 > mr-correct-wc.txt
 rm -f mr-out*
 

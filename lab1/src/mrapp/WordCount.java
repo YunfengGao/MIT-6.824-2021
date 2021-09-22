@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import mr.KeyValue;
 
-public class WordCount {
+public class WordCount implements IMapReduce{
     public List<KeyValue> map(String contents) {
         List<String> words = Arrays.stream(contents.split("[^a-zA-Z]+"))
                                    .filter(word -> !"".equals(word))
