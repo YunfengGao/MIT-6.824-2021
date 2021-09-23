@@ -12,6 +12,7 @@ rm -f mr-*
 
 # make sure software is freshly built.
 (javac ../MrSequential.java ../../mr/KeyValue.java ../../mrapp/*.java -d out) || exit 1
+(javac ../MrCoordinator.java ../../mr/Coordinator.java -d out) || exit 1
 
 failed_any=0
 
@@ -25,6 +26,11 @@ rm -f mr-out*
 
 echo '***' Starting wc test.
 
+timeout -k 2s 180s java -classpath out main.MrCoordinator ../../../data &
+pid=$!
+
+# give the coordinator time to create the sockets.
+sleep 1
 
 #########################################################
 if [ $failed_any -eq 0 ]; then
