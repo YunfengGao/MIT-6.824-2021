@@ -16,6 +16,12 @@ import mrapp.IMapReduce;
 
 public class MrSequential {
     public static void main(String[] args) {
+        if (args.length < 2) {
+            System.out.println("Usage: javac MrSequential.java ../mr/KeyValue.java ../mrapp/*.java -d out " +
+                                   "&& java -classpath out main.MrSequential mrapp.WordCount ../../data");
+            return;
+        }
+
         File file = new File(args[1]);
         // todo: 如何用Java模拟出Linux路径格式的正则？
         File[] files = file.listFiles();
