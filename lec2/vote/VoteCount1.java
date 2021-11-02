@@ -1,4 +1,4 @@
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class VoteCount1 {
     private static class UnsafeCounter {
@@ -45,6 +45,6 @@ public class VoteCount1 {
     }
 
     private static boolean requestVote() {
-        return new Random().nextBoolean();
+        return ThreadLocalRandom.current().nextBoolean();
     }
 }
