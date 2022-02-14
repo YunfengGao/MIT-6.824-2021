@@ -1,4 +1,4 @@
-package vo;
+package com.github.yunfeng.mit6824.kv.vo;
 
 import java.io.Serializable;
 

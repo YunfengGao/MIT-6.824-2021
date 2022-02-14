@@ -1,44 +1,24 @@
+package com.github.yunfeng.mit6824.kv;
+
+import com.github.yunfeng.mit6824.kv.vo.Constant;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import vo.Constant;
-import vo.GetArgs;
-import vo.PutArgs;
+
 
 public class Server {
     private final ExecutorService threadPool;
 
-    private static class KV implements KVService {
-        Map<String, String> data;
-
-        private KV() {
-            data = new ConcurrentHashMap<>();
-        }
-
-        public String get(GetArgs getArgs) {
-            return data.get(getArgs.getKey());
-        }
-
-        public void put(PutArgs putArgs) {
-            data.put(putArgs.getKey(), putArgs.getValue());
-        }
-
-        public int size() {
-            return data.size();
-        }
-    }
-
     private Server() throws IOException {
         threadPool = Executors.newFixedThreadPool(10);
-        final KV kv = new KV();
-        register(kv);
+        KVService kvService = new DefaultKVService();
+        register(kvService);
     }
 
     private void register(Object Service) throws IOException {
@@ -50,29 +30,20 @@ public class Server {
         serverSocket.close();
     }
 
-    static class Processor implements Runnable {
-        Socket socket;
-        Object service;
-
-        public Processor(Socket socket, Object service) {
-            this.socket = socket;
-            this.service = service;
-        }
-
+    /**
+     * JDK14的record关键字，
+     * https://www.baeldung.com/java-record-keyword
+     */
+    private record Processor(Socket socket, Object service) implements Runnable {
         @Override
         public void run() {
-            try {
-                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+            try (ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); ObjectOutputStream out =
+                    new ObjectOutputStream(socket.getOutputStream())) {
                 String methodName = in.readUTF();
                 Class<?>[] parameterTypes = (Class<?>[]) in.readObject();
                 Object[] parameters = (Object[]) in.readObject();
-                Method method = KVService.class
-                    .getMethod(
-                        methodName,
-                        parameterTypes
-                    );
+                Method method = KVService.class.getMethod(methodName, parameterTypes);
                 Object result = method.invoke(service, parameters);
-                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
                 out.writeObject(result);
             } catch (Exception e) {
                 e.printStackTrace();
